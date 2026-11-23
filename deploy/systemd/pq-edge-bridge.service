@@ -1,0 +1,48 @@
+[Unit]
+Description=pq-edge-bridge Post-Quantum Telemetry Bridge
+Documentation=https://github.com/PelleNybe/pq-edge-bridge
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pqbridge
+Group=pqbridge
+StateDirectory=pq-edge-bridge
+ConfigurationDirectory=pq-edge-bridge
+RuntimeDirectory=pq-edge-bridge
+WorkingDirectory=/var/lib/pq-edge-bridge
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/local/bin/pq-edge-bridge run --config /etc/pq-edge-bridge/config.yaml
+Restart=on-failure
+RestartSec=3s
+TimeoutStopSec=15s
+
+# Least-privilege systemd sandboxing
+NoNewPrivileges=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/var/lib/pq-edge-bridge
+ReadOnlyPaths=/etc/pq-edge-bridge
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=no
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+SystemCallFilter=~@privileged @resources @obsolete
+CapabilityBoundingSet=
+AmbientCapabilities=
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

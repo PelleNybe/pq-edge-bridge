@@ -1,0 +1,221 @@
+{
+  "platform": {
+    "machine": "x86_64",
+    "system": "Linux",
+    "python": "3.12.3"
+  },
+  "primitives": [
+    {
+      "name": "ML-KEM-768 KeyGen",
+      "iterations": 200,
+      "p50_ms": 0.0308,
+      "p95_ms": 0.0358,
+      "p99_ms": 0.041,
+      "mean_ms": 0.0316,
+      "ops_per_sec": 31619.6
+    },
+    {
+      "name": "ML-KEM-768 Encaps",
+      "iterations": 200,
+      "p50_ms": 0.0309,
+      "p95_ms": 0.0356,
+      "p99_ms": 0.039,
+      "mean_ms": 0.0318,
+      "ops_per_sec": 31455.1
+    },
+    {
+      "name": "ML-KEM-768 Decaps",
+      "iterations": 200,
+      "p50_ms": 0.032,
+      "p95_ms": 0.0359,
+      "p99_ms": 0.0404,
+      "mean_ms": 0.0326,
+      "ops_per_sec": 30671.2
+    },
+    {
+      "name": "ML-DSA-65 KeyGen",
+      "iterations": 200,
+      "p50_ms": 0.0624,
+      "p95_ms": 0.0678,
+      "p99_ms": 0.07,
+      "mean_ms": 0.0631,
+      "ops_per_sec": 15835.3
+    },
+    {
+      "name": "ML-DSA-65 Sign",
+      "iterations": 200,
+      "p50_ms": 0.1097,
+      "p95_ms": 0.2912,
+      "p99_ms": 0.4383,
+      "mean_ms": 0.1336,
+      "ops_per_sec": 7482.9
+    },
+    {
+      "name": "ML-DSA-65 Verify",
+      "iterations": 200,
+      "p50_ms": 0.0562,
+      "p95_ms": 0.061,
+      "p99_ms": 0.0689,
+      "mean_ms": 0.0568,
+      "ops_per_sec": 17593.2
+    }
+  ],
+  "envelopes": [
+    {
+      "mode": "Full Per-Message KEM",
+      "payload_bytes": 128,
+      "wire_bytes": 4628,
+      "overhead_bytes": 4500,
+      "pack_stats": {
+        "name": "Pack (Full Per-Message KEM)",
+        "iterations": 200,
+        "p50_ms": 0.1896,
+        "p95_ms": 0.3596,
+        "p99_ms": 0.6667,
+        "mean_ms": 0.218,
+        "ops_per_sec": 4588.1
+      },
+      "unpack_stats": {
+        "name": "Unpack (Full Per-Message KEM)",
+        "iterations": 200,
+        "p50_ms": 0.1285,
+        "p95_ms": 0.1363,
+        "p99_ms": 0.1445,
+        "mean_ms": 0.13,
+        "ops_per_sec": 7692.9
+      },
+      "rss_mib": 36.86,
+      "cpu_percent": 100.3
+    },
+    {
+      "mode": "Session-Reuse (1000 msgs)",
+      "payload_bytes": 128,
+      "wire_bytes": 3545,
+      "overhead_bytes": 3417,
+      "pack_stats": {
+        "name": "Pack (Session-Reuse (1000 msgs))",
+        "iterations": 200,
+        "p50_ms": 0.1531,
+        "p95_ms": 0.3169,
+        "p99_ms": 0.3506,
+        "mean_ms": 0.1716,
+        "ops_per_sec": 5828.5
+      },
+      "unpack_stats": {
+        "name": "Unpack (Session-Reuse (1000 msgs))",
+        "iterations": 200,
+        "p50_ms": 0.0932,
+        "p95_ms": 0.1008,
+        "p99_ms": 0.1095,
+        "mean_ms": 0.0946,
+        "ops_per_sec": 10568.8
+      },
+      "rss_mib": 36.87,
+      "cpu_percent": 93.6
+    },
+    {
+      "mode": "Full Per-Message KEM",
+      "payload_bytes": 1024,
+      "wire_bytes": 5524,
+      "overhead_bytes": 4500,
+      "pack_stats": {
+        "name": "Pack (Full Per-Message KEM)",
+        "iterations": 200,
+        "p50_ms": 0.1874,
+        "p95_ms": 0.2898,
+        "p99_ms": 0.4286,
+        "mean_ms": 0.1994,
+        "ops_per_sec": 5014.7
+      },
+      "unpack_stats": {
+        "name": "Unpack (Full Per-Message KEM)",
+        "iterations": 200,
+        "p50_ms": 0.131,
+        "p95_ms": 0.1378,
+        "p99_ms": 0.1426,
+        "mean_ms": 0.132,
+        "ops_per_sec": 7573.9
+      },
+      "rss_mib": 36.88,
+      "cpu_percent": 105.3
+    },
+    {
+      "mode": "Session-Reuse (1000 msgs)",
+      "payload_bytes": 1024,
+      "wire_bytes": 4441,
+      "overhead_bytes": 3417,
+      "pack_stats": {
+        "name": "Pack (Session-Reuse (1000 msgs))",
+        "iterations": 200,
+        "p50_ms": 0.1523,
+        "p95_ms": 0.3029,
+        "p99_ms": 0.4907,
+        "mean_ms": 0.1728,
+        "ops_per_sec": 5786.7
+      },
+      "unpack_stats": {
+        "name": "Unpack (Session-Reuse (1000 msgs))",
+        "iterations": 200,
+        "p50_ms": 0.0961,
+        "p95_ms": 0.1023,
+        "p99_ms": 0.1051,
+        "mean_ms": 0.0972,
+        "ops_per_sec": 10289.2
+      },
+      "rss_mib": 36.89,
+      "cpu_percent": 110.8
+    },
+    {
+      "mode": "Full Per-Message KEM",
+      "payload_bytes": 16384,
+      "wire_bytes": 20884,
+      "overhead_bytes": 4500,
+      "pack_stats": {
+        "name": "Pack (Full Per-Message KEM)",
+        "iterations": 200,
+        "p50_ms": 0.2302,
+        "p95_ms": 0.3702,
+        "p99_ms": 0.4711,
+        "mean_ms": 0.2464,
+        "ops_per_sec": 4058.8
+      },
+      "unpack_stats": {
+        "name": "Unpack (Full Per-Message KEM)",
+        "iterations": 200,
+        "p50_ms": 0.1714,
+        "p95_ms": 0.1792,
+        "p99_ms": 0.1842,
+        "mean_ms": 0.1731,
+        "ops_per_sec": 5778.3
+      },
+      "rss_mib": 36.97,
+      "cpu_percent": 107.1
+    },
+    {
+      "mode": "Session-Reuse (1000 msgs)",
+      "payload_bytes": 16384,
+      "wire_bytes": 19801,
+      "overhead_bytes": 3417,
+      "pack_stats": {
+        "name": "Pack (Session-Reuse (1000 msgs))",
+        "iterations": 200,
+        "p50_ms": 0.2026,
+        "p95_ms": 0.3327,
+        "p99_ms": 0.4392,
+        "mean_ms": 0.2162,
+        "ops_per_sec": 4625.5
+      },
+      "unpack_stats": {
+        "name": "Unpack (Session-Reuse (1000 msgs))",
+        "iterations": 200,
+        "p50_ms": 0.1358,
+        "p95_ms": 0.1431,
+        "p99_ms": 0.1468,
+        "mean_ms": 0.1374,
+        "ops_per_sec": 7279.8
+      },
+      "rss_mib": 36.98,
+      "cpu_percent": 98.8
+    }
+  ]
+}

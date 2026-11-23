@@ -1,0 +1,45 @@
+# Example ROS 2 + Upstream MQTT Bridge Configuration for pq-edge-bridge
+node_id: "ugv-robot-01"
+log_level: "INFO"
+flush_batch_size: 32
+flush_interval_seconds: 0.1
+
+crypto:
+  session_mode: true
+  session_max_messages: 1000
+  session_max_age_seconds: 600.0
+  local_kem_secret_key_path: "./keys/ugv-01.kem.key"
+  local_sig_secret_key_path: "./keys/ugv-01.sig.key"
+  peer_kem_public_key_path: "./keys/cloud.kem.pub"
+  peer_sig_public_key_path: "./keys/cloud.sig.pub"
+
+storage:
+  db_path: "./ugv_buffer.db"
+  max_bytes: 134217728
+  max_messages: 200000
+  overflow_policy: "drop_oldest"
+
+mqtt:
+  enabled: true
+  local_host: "127.0.0.1"
+  local_port: 1883
+  upstream_host: "broker.example.com"
+  upstream_port: 8883
+  upstream_tls: true
+  local_telemetry_topics: []
+  upstream_telemetry_prefix: "pqc/ros2"
+  upstream_command_topics:
+    - "pqc/cmd/#"
+  local_command_prefix: "cmd"
+  qos: 1
+
+ros2:
+  enabled: true
+  node_name: "pq_edge_bridge_ugv"
+  inbound_topics:
+    - "/imu/raw_bytes"
+    - "/odom/raw_bytes"
+  outbound_command_topics:
+    - "/cmd/raw_bytes"
+  upstream_topic_prefix: "pqc/ros2"
+  qos_depth: 10

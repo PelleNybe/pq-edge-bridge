@@ -1,0 +1,37 @@
+# Example MQTT Gateway Configuration for pq-edge-bridge
+node_id: "edge-gw-01"
+log_level: "INFO"
+flush_batch_size: 32
+flush_interval_seconds: 0.25
+
+crypto:
+  session_mode: true
+  session_max_messages: 1000
+  session_max_age_seconds: 600.0
+  max_clock_skew_seconds: 300.0
+  replay_window_size: 1024
+  local_kem_secret_key_path: "./keys/edge-01.kem.key"
+  local_sig_secret_key_path: "./keys/edge-01.sig.key"
+  peer_kem_public_key_path: "./keys/cloud.kem.pub"
+  peer_sig_public_key_path: "./keys/cloud.sig.pub"
+
+storage:
+  db_path: "./pq_edge_bridge.db"
+  max_bytes: 67108864
+  max_messages: 100000
+  overflow_policy: "drop_oldest"
+
+mqtt:
+  enabled: true
+  local_host: "127.0.0.1"
+  local_port: 1883
+  upstream_host: "broker.example.com"
+  upstream_port: 8883
+  upstream_tls: true
+  local_telemetry_topics:
+    - "telemetry/#"
+  upstream_telemetry_prefix: "pqc/telemetry"
+  upstream_command_topics:
+    - "pqc/cmd/#"
+  local_command_prefix: "cmd"
+  qos: 1
