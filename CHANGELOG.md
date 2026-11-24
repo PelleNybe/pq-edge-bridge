@@ -18,8 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - SQLite WAL-mode FIFO store-and-forward buffer with atomic dequeue-on-ack and disk quotas (`storage/buffer.py`).
   - Production `paho-mqtt` v2 async bridge adapter (`transport/mqtt_adapter.py`).
   - Optional ROS 2 / DDS bridge adapter via `rclpy` (`transport/ros2_adapter.py`).
-- **CLI, Benchmarks & Packaging:**
-  - Typer + Rich CLI (`keygen`, `encrypt`, `decrypt`, `verify`, `inspect`, `run`).
+- **CLI, Observability, Benchmarks & Packaging:**
+  - Typer + Rich CLI (`keygen`, `init-config`, `buffer-stats`, `encrypt`, `decrypt`, `verify`, `inspect`, `run`).
+  - Opt-in localhost `/healthz` and Prometheus `/metrics` HTTP endpoint (`observability.py`).
+  - Runnable MQTT/ROS 2 configuration templates and cloud receiver example (`examples/`).
   - Real benchmark suite (`benchmarks/run_benchmarks.py`) for latency, throughput, wire overhead, CPU, and RSS memory.
   - Reproducible `liboqs` build script (`deploy/scripts/install_liboqs.sh`), hardened `systemd` unit, multi-arch `Dockerfile` (`linux/amd64`, `linux/arm64`), and GitHub Actions CI workflow.
   - Complete architecture, protocol specification, operator manual, and benchmark documentation.

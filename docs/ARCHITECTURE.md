@@ -60,6 +60,9 @@ At the same time, edge hardware (e.g., Raspberry Pi 5, NVIDIA Jetson Orin, indus
 - **`mqtt_adapter.py`**: Dual-client `paho-mqtt` v2 adapter (`_local_client` + `_upstream_client`) with automatic exponential-backoff reconnect, TLS support, and QoS 1 `PUBACK` confirmation before buffer deletion.
 - **`ros2_adapter.py`**: Optional `rclpy` adapter (`std_msgs/msg/UInt8MultiArray`) running `SingleThreadedExecutor` in a dedicated daemon thread and marshalling messages to `asyncio` via `loop.call_soon_threadsafe`.
 
+### 2.4 Observability Layer (`src/pq_edge_bridge/observability.py`)
+- **`ObservabilityServer`**: Zero-dependency `asyncio.start_server` HTTP/1.1 endpoint (opt-in, bound to `127.0.0.1:9108` by default) serving `GET /healthz` (JSON) and `GET /metrics` (Prometheus `0.0.4` text exposition format).
+
 ---
 
 ## 3. Concurrency & Ordering Guarantees

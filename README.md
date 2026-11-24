@@ -28,6 +28,7 @@ Adversaries are already intercepting and archiving encrypted cellular, satellite
 - ⚡ **Edge-Optimized Session Rotation:** Amortizes ML-KEM-768 overhead across configurable message-count or time-based rotation windows (**~0.15 ms p50** pack latency, **~37 MiB RSS**).
 - 💾 **Zero-Loss Offline Store-and-Forward:** Crash-safe **SQLite WAL-mode** FIFO buffer with atomic dequeue-on-ack (`PUBACK`) and configurable disk quotas.
 - 🤖 **MQTT & ROS 2 / DDS Native:** Bridges local plaintext MQTT topics or ROS 2 `UInt8MultiArray` topics to upstream PQC-protected channels — and unwraps signed inbound C2 commands back to the local bus.
+- 📈 **Zero-Dependency Observability:** Opt-in localhost `/healthz` (JSON) and Prometheus `/metrics` endpoint for Grafana dashboards and Docker/Kubernetes healthchecks.
 - 🔒 **Hardened by Default:** Atomic `chmod 600` key generation, `Verify-then-Decrypt` framing, sliding-window replay protection, least-privilege `systemd` unit, and multi-arch (`amd64`/`arm64`) Docker image.
 
 ---
@@ -184,6 +185,23 @@ sudo systemctl enable --now pq-edge-bridge
 ```
 
 Includes `NoNewPrivileges=yes`, `ProtectSystem=strict`, `ProtectHome=yes`, `PrivateDevices=yes`, `CapabilityBoundingSet=`, and `UMask=0077`.
+
+</details>
+
+<details>
+<summary><strong>📈 Prometheus <code>/metrics</code> &amp; <code>/healthz</code> Observability</strong></summary>
+
+Enable the opt-in localhost HTTP endpoint in `config.yaml` (disabled by default):
+
+```yaml
+observability:
+  enabled: true
+  host: "127.0.0.1"
+  port: 9108
+```
+
+- `GET /healthz` — JSON status (`status`, `upstream_connected`, `buffer_messages`, `buffer_bytes`, `session_rotations`)
+- `GET /metrics` — Prometheus `0.0.4` counters & gauges (`pq_bridge_telemetry_received_total`, `pq_bridge_telemetry_forwarded_total`, `pq_bridge_commands_received_total`, `pq_bridge_commands_rejected_total`, `pq_bridge_buffer_messages`, `pq_bridge_session_rotations_total`)
 
 </details>
 
