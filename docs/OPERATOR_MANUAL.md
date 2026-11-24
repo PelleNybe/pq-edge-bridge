@@ -134,6 +134,15 @@ Inspect the SQLite WAL store-and-forward queue depth at any time:
 pq-edge-bridge buffer-stats --db /var/lib/pq-edge-bridge/buffer.db
 ```
 
+Enable the optional localhost Prometheus `/metrics` & `/healthz` endpoint in `config.yaml` for Grafana or Docker healthchecks:
+
+```yaml
+observability:
+  enabled: true
+  host: "127.0.0.1"
+  port: 9108
+```
+
 Run the reference cloud-side receiver ([examples/cloud_receiver.py](../examples/cloud_receiver.py)) to verify and decrypt upstream telemetry:
 
 ```bash

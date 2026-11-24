@@ -33,6 +33,22 @@ class BridgeKeyMaterial:
     peer_sig_public_key: bytes
 
 
+@dataclass(frozen=True, slots=True)
+class BridgeMetricsSnapshot:
+    """Point-in-time operational metrics for /healthz and Prometheus /metrics."""
+
+    node_id: str
+    running: bool
+    upstream_connected: bool
+    buffer_messages: int
+    buffer_bytes: int
+    telemetry_received_total: int
+    telemetry_forwarded_total: int
+    commands_received_total: int
+    commands_rejected_total: int
+    session_rotations_total: int
+
+
 class TelemetryBridge:
     """Asynchronous Post-Quantum telemetry bridge with offline store-and-forward."""
 
@@ -64,10 +80,35 @@ class TelemetryBridge:
         )
         self._full_kem_seq = 0
         self._seq_lock = asyncio.Lock()
+        self._flush_lock = asyncio.Lock()
 
         self._flush_event = asyncio.Event()
         self._flush_task: asyncio.Task[None] | None = None
         self._running = False
+
+        self._telemetry_received_total = 0
+        self._telemetry_forwarded_total = 0
+        self._commands_received_total = 0
+        self._commands_rejected_total = 0
+
+    async def snapshot_metrics(self) -> BridgeMetricsSnapshot:
+        """Collect a point-in-time snapshot of bridge and SQLite WAL buffer metrics."""
+        buf_stats = await self._buffer.astats()
+        rotations = (
+            self._session_manager.rotation_count if self._session_manager is not None else 0
+        )
+        return BridgeMetricsSnapshot(
+            node_id=self._config.node_id,
+            running=self._running,
+            upstream_connected=self._transport.is_upstream_connected,
+            buffer_messages=buf_stats.message_count,
+            buffer_bytes=buf_stats.total_bytes,
+            telemetry_received_total=self._telemetry_received_total,
+            telemetry_forwarded_total=self._telemetry_forwarded_total,
+            commands_received_total=self._commands_received_total,
+            commands_rejected_total=self._commands_rejected_total,
+            session_rotations_total=rotations,
+        )
 
     def _map_outbound_topic(self, local_topic: str) -> str:
         prefix = self._config.mqtt.upstream_telemetry_prefix.strip("/")
@@ -125,6 +166,7 @@ class TelemetryBridge:
         )
         upstream_topic = self._map_outbound_topic(msg.topic)
         await self._buffer.aenqueue(upstream_topic, envelope)
+        self._telemetry_received_total += 1
         self._flush_event.set()
 
     async def handle_upstream_command(self, msg: TransportMessage) -> None:
@@ -138,6 +180,7 @@ class TelemetryBridge:
                 session_manager=self._session_manager,
             )
         except CryptoError as exc:
+            self._commands_rejected_total += 1
             logger.warning(
                 "Rejected inbound PQC command on '%s': %s",
                 msg.topic,
@@ -145,6 +188,7 @@ class TelemetryBridge:
             )
             return
 
+        self._commands_received_total += 1
         target_topic = decrypted.header.topic or self._map_inbound_topic(msg.topic)
         try:
             await self._transport.publish_local(target_topic, decrypted.payload)
@@ -156,31 +200,33 @@ class TelemetryBridge:
         if not self._transport.is_upstream_connected:
             return 0
 
-        total_acked = 0
-        while self._running and self._transport.is_upstream_connected:
-            batch = await self._buffer.apeek_batch(limit=self._config.flush_batch_size)
-            if not batch:
-                break
-
-            acked_ids: list[int] = []
-            for item in batch:
-                try:
-                    await self._transport.publish_upstream(item.topic, item.payload)
-                    acked_ids.append(item.id)
-                except TransportError as exc:
-                    logger.debug("Upstream publish deferred for id=%d: %s", item.id, exc)
+        async with self._flush_lock:
+            total_acked = 0
+            while self._running and self._transport.is_upstream_connected:
+                batch = await self._buffer.apeek_batch(limit=self._config.flush_batch_size)
+                if not batch:
                     break
 
-            if acked_ids:
-                await self._buffer.aack(acked_ids)
-                total_acked += len(acked_ids)
-            else:
-                break
+                acked_ids: list[int] = []
+                for item in batch:
+                    try:
+                        await self._transport.publish_upstream(item.topic, item.payload)
+                        acked_ids.append(item.id)
+                    except TransportError as exc:
+                        logger.debug("Upstream publish deferred for id=%d: %s", item.id, exc)
+                        break
 
-            if len(acked_ids) < len(batch):
-                break
+                if acked_ids:
+                    acked_count = await self._buffer.aack(acked_ids)
+                    self._telemetry_forwarded_total += acked_count
+                    total_acked += acked_count
+                else:
+                    break
 
-        return total_acked
+                if len(acked_ids) < len(batch):
+                    break
+
+            return total_acked
 
     async def _flush_loop(self) -> None:
         while self._running:

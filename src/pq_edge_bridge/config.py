@@ -71,6 +71,14 @@ class Ros2Config(BaseModel):
     qos_depth: int = Field(default=10, ge=1)
 
 
+class ObservabilityConfig(BaseModel):
+    """Optional localhost HTTP endpoint for /healthz and Prometheus /metrics."""
+
+    enabled: bool = False
+    host: str = "127.0.0.1"
+    port: int = Field(default=9108, ge=0, le=65535)
+
+
 class BridgeConfig(BaseModel):
     """Top-level configuration for pq-edge-bridge."""
 
@@ -82,6 +90,7 @@ class BridgeConfig(BaseModel):
     storage: StorageConfig = Field(default_factory=StorageConfig)
     mqtt: MqttConfig = Field(default_factory=MqttConfig)
     ros2: Ros2Config = Field(default_factory=Ros2Config)
+    observability: ObservabilityConfig = Field(default_factory=ObservabilityConfig)
 
     @field_validator("node_id")
     @classmethod

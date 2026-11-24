@@ -36,6 +36,7 @@ from pq_edge_bridge.crypto.signer import (
     ML_DSA_65_SECRET_KEY_BYTES,
 )
 from pq_edge_bridge.exceptions import PQBridgeError
+from pq_edge_bridge.observability import ObservabilityServer
 from pq_edge_bridge.storage.buffer import StoreAndForwardBuffer
 from pq_edge_bridge.transport.mqtt_adapter import MqttBridgeTransport
 from pq_edge_bridge.transport.ros2_adapter import Ros2BridgeTransport
@@ -303,6 +304,11 @@ ros2:
     - "/cmd/raw"
   upstream_topic_prefix: "pqc/ros2"
   qos_depth: 10
+
+observability:
+  enabled: false
+  host: "127.0.0.1"
+  port: 9108
 """
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(template, encoding="utf-8")
@@ -427,6 +433,15 @@ def run(
             transport=primary_transport,
             buffer=buffer,
         )
+        obs_server = (
+            ObservabilityServer(
+                bridge,
+                host=cfg.observability.host,
+                port=cfg.observability.port,
+            )
+            if cfg.observability.enabled
+            else None
+        )
 
         stop_event = asyncio.Event()
         loop = asyncio.get_running_loop()
@@ -434,6 +449,8 @@ def run(
             loop.add_signal_handler(sig, stop_event.set)
 
         await bridge.start()
+        if obs_server is not None:
+            await obs_server.start()
         if mqtt_transport is not None and ros2_transport is not None:
             await ros2_transport.start(
                 on_local_telemetry=bridge.handle_local_telemetry,
@@ -442,6 +459,8 @@ def run(
 
         await stop_event.wait()
 
+        if obs_server is not None:
+            await obs_server.stop()
         if mqtt_transport is not None and ros2_transport is not None:
             await ros2_transport.stop()
         await bridge.stop()
