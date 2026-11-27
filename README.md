@@ -2,17 +2,20 @@
 
 # 🔐 `pq-edge-bridge`
 
-### Post-Quantum Telemetry Bridge for Edge, IoT & Robotics
+### 🚀 Post-Quantum Telemetry Bridge for Edge, IoT & Robotics
 
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
-[![Python](https://img.shields.io/badge/Python-3.11%20%7C%203.12-3776AB?logo=python&logoColor=white)](pyproject.toml)
-[![CI](https://img.shields.io/github/actions/workflow/status/PelleNybe/pq-edge-bridge/ci.yml?branch=main&label=CI)](.github/workflows/ci.yml)
-[![PQC Standards](https://img.shields.io/badge/PQC-NIST%20FIPS%20203%20%26%20204-7C3AED)](docs/PROTOCOL_SPEC.md)
-[![Architecture](https://img.shields.io/badge/Arch-x86__64%20%7C%20ARM64-059669)](deploy/docker/Dockerfile)
+[![Typing SVG](https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=18&duration=3200&pause=1000&color=7C3AED&center=true&vCenter=true&width=720&lines=Defeat+%22Harvest+Now%2C+Decrypt+Later%22+at+the+Edge+%F0%9F%9B%A1%EF%B8%8F;ML-KEM-768+%2B+ML-DSA-65+%2B+AES-256-GCM+over+MQTT+%26+ROS+2+%E2%9A%A1;Zero-Loss+SQLite+WAL+Store-and-Forward+Buffer+%F0%9F%92%BE)](https://github.com/PelleNybe/pq-edge-bridge)
 
-**Defeat *"Harvest Now, Decrypt Later"* attacks on constrained edge, industrial IoT, and autonomous robotics telemetry — without rewriting your sensors or ROS 2 nodes.**
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg?style=for-the-badge)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.11%20%7C%203.12-3776AB?style=for-the-badge&logo=python&logoColor=white)](pyproject.toml)
+[![CI](https://img.shields.io/github/actions/workflow/status/PelleNybe/pq-edge-bridge/ci.yml?branch=main&label=CI&style=for-the-badge&logo=github)](.github/workflows/ci.yml)
+[![PQC Standards](https://img.shields.io/badge/PQC-NIST%20FIPS%20203%20%26%20204-7C3AED?style=for-the-badge)](docs/PROTOCOL_SPEC.md)
+[![Architecture](https://img.shields.io/badge/Arch-x86__64%20%7C%20ARM64-059669?style=for-the-badge&logo=linux&logoColor=white)](deploy/docker/Dockerfile)
+[![Sponsor](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-Support-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/pellenybe)
 
-[Architecture](docs/ARCHITECTURE.md) • [Protocol Spec](docs/PROTOCOL_SPEC.md) • [Operator Manual](docs/OPERATOR_MANUAL.md) • [Benchmarks](docs/BENCHMARKS.md)
+**Quantum-safe telemetry & command-and-control (C2) for autonomous robots, drones, and industrial IoT — drop-in protection without rewriting a single sensor or ROS 2 node.**
+
+[🏛️ Architecture](docs/ARCHITECTURE.md) • [📜 Protocol Spec](docs/PROTOCOL_SPEC.md) • [🛠️ Operator Manual](docs/OPERATOR_MANUAL.md) • [📊 Benchmarks](docs/BENCHMARKS.md) • [☕ Sponsor](https://buymeacoffee.com/pellenybe)
 
 </div>
 
@@ -24,8 +27,8 @@ Adversaries are already intercepting and archiving encrypted cellular, satellite
 
 `pq-edge-bridge` acts as a **drop-in, zero-trust cryptographic sidecar** on your edge gateway:
 
-- 🔑 **NIST-Standardized Post-Quantum Cryptography:** Hybrid **ML-KEM-768** (FIPS 203) key encapsulation + **HKDF-SHA256** + **AES-256-GCM** authenticated encryption + **ML-DSA-65** (FIPS 204) digital signatures via compiled `liboqs`.
-- ⚡ **Edge-Optimized Session Rotation:** Amortizes ML-KEM-768 overhead across configurable message-count or time-based rotation windows (**~0.15 ms p50** pack latency, **~37 MiB RSS**).
+- 🔑 **NIST-Standardized Post-Quantum Cryptography:** Hybrid **ML-KEM-768** (FIPS 203) key encapsulation + **HKDF-SHA256** + **AES-256-GCM** authenticated encryption + **ML-DSA-65** (FIPS 204) digital signatures backed by compiled `liboqs`.
+- ⚡ **Edge-Optimized Session Rotation:** Amortizes ML-KEM-768 overhead across configurable message-count or time-based rotation windows (**`0.152 ms` p50** pack latency, **`~37 MiB` RSS**).
 - 💾 **Zero-Loss Offline Store-and-Forward:** Crash-safe **SQLite WAL-mode** FIFO buffer with atomic dequeue-on-ack (`PUBACK`) and configurable disk quotas.
 - 🤖 **MQTT & ROS 2 / DDS Native:** Bridges local plaintext MQTT topics or ROS 2 `UInt8MultiArray` topics to upstream PQC-protected channels — and unwraps signed inbound C2 commands back to the local bus.
 - 📈 **Zero-Dependency Observability:** Opt-in localhost `/healthz` (JSON) and Prometheus `/metrics` endpoint for Grafana dashboards and Docker/Kubernetes healthchecks.
@@ -37,25 +40,26 @@ Adversaries are already intercepting and archiving encrypted cellular, satellite
 
 ```mermaid
 flowchart LR
-    subgraph Edge["Edge Gateway (ARM64 / x86_64)"]
-        S["Sensors / ROS 2 Nodes"] -->|"Plaintext MQTT / DDS"| T["Transport Adapter<br/>(MQTT / rclpy)"]
-        T -->|"Pack: ML-KEM-768 + AES-256-GCM + ML-DSA-65"| B[("SQLite WAL<br/>FIFO Buffer")]
-        B -->|"Atomic Dequeue on PUBACK"| U["Upstream PQC Link"]
+    subgraph Edge["🛰️ Edge Gateway (ARM64 / x86_64)"]
+        S["📡 Sensors / ROS 2 Nodes"] -->|"Plaintext MQTT / DDS"| T["🔌 Transport Adapter<br/>(MQTT / rclpy)"]
+        T -->|"🔐 ML-KEM-768 + AES-256-GCM + ML-DSA-65"| B[("💾 SQLite WAL<br/>FIFO Buffer")]
+        B -->|"✅ Atomic Dequeue on PUBACK"| U["🌐 Upstream PQC Link"]
+        O["📈 /healthz & /metrics"] -.->|"Prometheus / Grafana"| B
     end
-    U -->|"Untrusted WAN / 5G / Satellite"| C["Cloud / C2 Receiver"]
-    C -->|"Signed PQC Command"| U
-    U -->|"Verify-then-Decrypt"| T
+    U -->|"Untrusted WAN / 5G / Satellite"| C["☁️ Cloud / C2 Receiver"]
+    C -->|"✍️ Signed PQC Command"| U
+    U -->|"🛡️ Verify-then-Decrypt"| T
 ```
 
-### Session & Envelope Sequence
+### 🔄 Session & Envelope Sequence
 
 ```mermaid
 sequenceDiagram
     autonumber
-    participant Sensor as Local Sensor / ROS 2
-    participant Bridge as pq-edge-bridge (Edge)
-    participant WAL as SQLite WAL Buffer
-    participant Cloud as Cloud PQC Receiver
+    participant Sensor as 📡 Local Sensor / ROS 2
+    participant Bridge as 🔐 pq-edge-bridge (Edge)
+    participant WAL as 💾 SQLite WAL Buffer
+    participant Cloud as ☁️ Cloud PQC Receiver
 
     Sensor->>Bridge: Plaintext Telemetry (telemetry/imu)
     Bridge->>Bridge: ML-KEM-768 (or cached session) + HKDF-SHA256
@@ -75,7 +79,7 @@ sequenceDiagram
 
 ## ⚡ Quickstart
 
-### 1. Install `liboqs` & `pq-edge-bridge`
+### 1️⃣ Install `liboqs` & `pq-edge-bridge`
 
 ```bash
 git clone https://github.com/PelleNybe/pq-edge-bridge.git
@@ -84,14 +88,14 @@ cd pq-edge-bridge
 pip install .
 ```
 
-### 2. Generate Post-Quantum Keypairs (`chmod 600`)
+### 2️⃣ Generate Post-Quantum Keypairs (`chmod 600`)
 
 ```bash
 pq-edge-bridge keygen --output-dir ./keys --prefix edge-01
 pq-edge-bridge keygen --output-dir ./keys --prefix cloud
 ```
 
-### 3. Encrypt, Verify, Inspect & Decrypt via CLI
+### 3️⃣ Encrypt, Verify, Inspect & Decrypt via CLI
 
 ```bash
 # Encrypt & sign telemetry
@@ -116,7 +120,7 @@ pq-edge-bridge decrypt \
   --in ./telemetry.pqeb
 ```
 
-### 4. Configure & Run the Bridge Daemon
+### 4️⃣ Configure & Run the Bridge Daemon
 
 ```bash
 # Generate a starter configuration
@@ -145,13 +149,13 @@ Measured on Linux `x86_64` with `liboqs 0.16.0` ([full benchmark report](docs/BE
 | :--- | :--- | :--- |
 | **Pack Latency (p50 / p99, 1 KiB)** | `0.187 ms` / `0.429 ms` | `0.152 ms` / `0.491 ms` |
 | **Unpack Latency (p50 / p99, 1 KiB)** | `0.131 ms` / `0.143 ms` | `0.096 ms` / `0.105 ms` |
-| **Wire Overhead** | `+4,500 B` | `+3,417 B` (-24%) |
+| **Wire Overhead** | `+4,500 B` | `+3,417 B` (**-24%**) |
 | **Process Memory (RSS)** | `~36.9 MiB` | `~36.9 MiB` |
 | **Forward Secrecy Granularity** | Every message | Every `N` messages or `T` seconds |
 
 ---
 
-## 🧩 Technical Details
+## 🧩 Interactive Technical Reference
 
 <details>
 <summary><strong>📦 Binary Wire Format (<code>PQEB</code> v1)</strong></summary>
@@ -185,6 +189,20 @@ sudo systemctl enable --now pq-edge-bridge
 ```
 
 Includes `NoNewPrivileges=yes`, `ProtectSystem=strict`, `ProtectHome=yes`, `PrivateDevices=yes`, `CapabilityBoundingSet=`, and `UMask=0077`.
+
+</details>
+
+<details>
+<summary><strong>🐳 Multi-Arch Docker Deployment (<code>amd64</code> / <code>arm64</code>)</strong></summary>
+
+```bash
+docker build -f deploy/docker/Dockerfile -t ghcr.io/pellenybe/pq-edge-bridge:latest .
+docker run --rm \
+  -v /etc/pq-edge-bridge:/etc/pq-edge-bridge:ro \
+  -v pqbridge-data:/var/lib/pq-edge-bridge \
+  ghcr.io/pellenybe/pq-edge-bridge:latest \
+  run --config /etc/pq-edge-bridge/config.yaml
+```
 
 </details>
 
@@ -226,12 +244,25 @@ ros2:
 
 ---
 
-## 🤝 Creators & Credits
+## 🤝 Credits, Acknowledgments & Support
+
+`pq-edge-bridge` is engineered and maintained with ❤️ for the Edge AI, IIoT, and Robotics security community.
 
 | Role | Attribution |
 | :--- | :--- |
-| **Organization** | [**Corax CoLAB**](https://coraxcolab.com) — *Deep Tech, Edge AI & Robotics Innovation* |
-| **Lead Developer** | **Pelle Nyberg** ([GitHub: `@PelleNybe`](https://github.com/PelleNybe)) |
+| 🏢 **Organization** | [**Corax CoLAB**](https://coraxcolab.com) — *Deep Tech, Edge AI & Robotics Innovation* |
+| 👨‍💻 **Lead Developer** | **Pelle Nyberg** ([GitHub: `@PelleNybe`](https://github.com/PelleNybe)) |
+| 🔬 **Cryptographic Foundation** | Built on [**Open Quantum Safe (`liboqs`)**](https://openquantumsafe.org/) implementing NIST FIPS 203 & FIPS 204 |
+
+<div align="center">
+
+### ☕ Support This Project
+
+If `pq-edge-bridge` helps secure your edge fleet or robotics stack, consider buying me a coffee!
+
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-pellenybe-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/pellenybe)
+
+</div>
 
 ---
 
